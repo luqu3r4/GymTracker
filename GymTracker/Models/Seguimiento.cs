@@ -8,6 +8,6 @@ namespace GymTracker.Models
         public string Ejercicio { get; set; } = string.Empty;
         public decimal Peso { get; set; }
         public int Repeticiones { get; set; }
-        public DateOnly Fecha { get; set; }
+        public DateTime Fecha { get; set; }
     }
 }

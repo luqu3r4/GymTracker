@@ -1,0 +1,157 @@
+<Window x:Class="GymTracker.Views.RegistrosWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="GymTracker — Registros"
+        Height="620" Width="920"
+        MinHeight="480" MinWidth="700"
+        WindowStartupLocation="CenterOwner"
+        Background="#F0F2F5">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+
+    <DockPanel>
+
+        <!-- MENU -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Archivo">
+                <MenuItem Header="Volver al panel" Click="BtnVolver_Click"/>
+                <Separator/>
+                <MenuItem Header="Salir" Command="{Binding SalirCommand}"/>
+            </MenuItem>
+            <MenuItem Header="_Informe">
+                <MenuItem Header="Generar informe PDF" Command="{Binding GenerarInformeCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- HEADER BAR -->
+        <Border DockPanel.Dock="Top" Background="#1565C0" Padding="18,10">
+            <DockPanel>
+                <TextBlock Text="GymTracker" FontSize="20" FontWeight="Bold"
+                           Foreground="White" VerticalAlignment="Center"/>
+                <TextBlock DockPanel.Dock="Right"
+                           Text="{Binding Titulo}"
+                           FontSize="14" FontWeight="SemiBold"
+                           Foreground="#BBDEFB" VerticalAlignment="Center"/>
+            </DockPanel>
+        </Border>
+
+        <!-- STATUS BAR -->
+        <StatusBar DockPanel.Dock="Bottom" Background="#E8EAF6">
+            <StatusBarItem>
+                <TextBlock Text="{Binding Registros.Count, StringFormat='Total de registros: {0}'}"
+                           Foreground="#3949AB" FontSize="12"/>
+            </StatusBarItem>
+        </StatusBar>
+
+        <!-- MAIN CONTENT -->
+        <Grid Margin="20,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="280"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- DataGrid card -->
+            <Border Grid.Column="0" Background="White" CornerRadius="8"
+                    Padding="16" Margin="0,0,14,0">
+                <Border.Effect>
+                    <DropShadowEffect Color="#BDBDBD" ShadowDepth="1" BlurRadius="8" Opacity="0.25"/>
+                </Border.Effect>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="Historial" FontSize="15"
+                               FontWeight="Bold" Foreground="#1565C0" Margin="0,0,0,12"/>
+                    <DataGrid ItemsSource="{Binding Registros}"
+                              SelectedItem="{Binding RegistroSeleccionado}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              SelectionMode="Single"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="0"
+                              RowHeight="38"
+                              FontSize="13">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Fecha"
+                                               Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}"
+                                               Width="120"/>
+                            <DataGridTextColumn Header="Peso (kg)"
+                                               Binding="{Binding Peso, StringFormat=F1}"
+                                               Width="110"/>
+                            <DataGridTextColumn Header="Repeticiones"
+                                               Binding="{Binding Repeticiones}"
+                                               Width="*"/>
+                        </DataGrid.Columns>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#BBDEFB"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#E3F2FD"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+
+            <!-- Form card -->
+            <Border Grid.Column="1" Background="White" CornerRadius="8" Padding="18">
+                <Border.Effect>
+                    <DropShadowEffect Color="#BDBDBD" ShadowDepth="1" BlurRadius="8" Opacity="0.25"/>
+                </Border.Effect>
+                <StackPanel>
+                    <TextBlock Text="Nuevo Registro" FontSize="15" FontWeight="Bold"
+                               Foreground="#1565C0" Margin="0,0,0,18"/>
+
+                    <TextBlock Text="PESO (kg)" FontSize="11" FontWeight="SemiBold"
+                               Foreground="#607D8B" Margin="0,0,0,5"/>
+                    <TextBox Text="{Binding PesoInput, UpdateSourceTrigger=PropertyChanged}"
+                             Height="36" FontSize="14" Padding="8,0"
+                             BorderBrush="#B0BEC5" Margin="0,0,0,14"/>
+
+                    <TextBlock Text="REPETICIONES" FontSize="11" FontWeight="SemiBold"
+                               Foreground="#607D8B" Margin="0,0,0,5"/>
+                    <TextBox Text="{Binding RepeticionesInput, UpdateSourceTrigger=PropertyChanged}"
+                             Height="36" FontSize="14" Padding="8,0"
+                             BorderBrush="#B0BEC5" Margin="0,0,0,14"/>
+
+                    <TextBlock Text="FECHA" FontSize="11" FontWeight="SemiBold"
+                               Foreground="#607D8B" Margin="0,0,0,5"/>
+                    <DatePicker SelectedDate="{Binding FechaInput}"
+                                Height="36" FontSize="14"
+                                BorderBrush="#B0BEC5" Margin="0,0,0,18"/>
+
+                    <!-- Error -->
+                    <TextBlock Text="{Binding MensajeError}" Foreground="#E53935"
+                               FontSize="11" TextWrapping="Wrap" Margin="0,0,0,10"
+                               Visibility="{Binding HayError, Converter={StaticResource BoolToVis}}"/>
+
+                    <Button Content="Agregar Registro"
+                            Command="{Binding AgregarCommand}"
+                            Height="38" FontSize="13" FontWeight="SemiBold"
+                            Background="#1565C0" Foreground="White"
+                            BorderThickness="0" Cursor="Hand" Margin="0,0,0,8"/>
+
+                    <Button Content="Eliminar Seleccionado"
+                            Command="{Binding EliminarCommand}"
+                            Height="38" FontSize="13"
+                            Background="#C62828" Foreground="White"
+                            BorderThickness="0" Cursor="Hand" Margin="0,0,0,24"/>
+
+                    <Separator Margin="0,0,0,16"/>
+
+                    <Button Content="Generar Informe PDF"
+                            Command="{Binding GenerarInformeCommand}"
+                            Height="38" FontSize="13"
+                            Background="#455A64" Foreground="White"
+                            BorderThickness="0" Cursor="Hand"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </DockPanel>
+</Window>

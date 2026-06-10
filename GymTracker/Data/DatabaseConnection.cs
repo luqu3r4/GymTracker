@@ -7,7 +7,7 @@ namespace GymTracker.Data
     {
         private const string ConnectionString =
             "Server=localhost;Port=3306;Database=gymtracker;" +
-            "User ID=root;Password=;CharSet=utf8mb4;";
+            "User ID=root;Password=alumno;CharSet=utf8mb4;";
 
         private static DatabaseConnection? _instance;
         private static readonly object _lock = new();
