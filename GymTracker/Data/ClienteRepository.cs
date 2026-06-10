@@ -23,7 +23,9 @@ namespace GymTracker.Data
                 {
                     IdCliente = reader.GetInt32("id_cliente"),
                     Nombre = reader.GetString("nombre"),
-                    IdEntrenador = idEntrenador
+                    IdEntrenador = idEntrenador,
+                    IdRutinaActual = reader.IsDBNull(reader.GetOrdinal("id_rutina_actual"))
+                        ? null : reader.GetInt32("id_rutina_actual")
                 });
             return list;
         }

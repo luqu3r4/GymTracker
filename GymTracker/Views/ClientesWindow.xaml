@@ -16,6 +16,9 @@
                 <Separator/>
                 <MenuItem Header="Salir" Command="{Binding SalirCommand}"/>
             </MenuItem>
+            <MenuItem Header="_Rutinas">
+                <MenuItem Header="Gestionar Rutinas" Command="{Binding GestionarRutinasCommand}"/>
+            </MenuItem>
             <MenuItem Header="_Ayuda">
                 <MenuItem Header="Acerca de GymTracker" Command="{Binding AcercaDeCommand}"/>
             </MenuItem>
@@ -55,26 +58,50 @@
                 <Border.Effect>
                     <DropShadowEffect Color="#BDBDBD" ShadowDepth="1" BlurRadius="8" Opacity="0.25"/>
                 </Border.Effect>
-                <DockPanel>
-                    <Button DockPanel.Dock="Right" Content="Borrar Cliente"
-                            Command="{Binding EliminarClienteCommand}"
-                            Height="34" Padding="14,0" Margin="8,0,0,0"
-                            Background="#C62828" Foreground="White"
-                            BorderThickness="0" Cursor="Hand" FontSize="13"/>
-                    <Button DockPanel.Dock="Right" Content="+ Añadir Cliente"
-                            Command="{Binding AgregarClienteCommand}"
-                            Height="34" Padding="14,0" Margin="8,0,0,0"
-                            Background="#2E7D32" Foreground="White"
-                            BorderThickness="0" Cursor="Hand" FontSize="13"/>
-                    <TextBlock DockPanel.Dock="Left" Text="Cliente:"
-                               FontSize="14" FontWeight="SemiBold"
-                               VerticalAlignment="Center" Foreground="#424242" Margin="0,0,12,0"/>
-                    <ComboBox ItemsSource="{Binding Clientes}"
-                              SelectedItem="{Binding ClienteSeleccionado}"
-                              DisplayMemberPath="Nombre"
-                              Height="34" FontSize="14" Padding="8,0"
-                              MaxWidth="320" HorizontalAlignment="Left"/>
-                </DockPanel>
+                <StackPanel>
+                    <!-- Row 1: client selector -->
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="Borrar Cliente"
+                                Command="{Binding EliminarClienteCommand}"
+                                Height="34" Padding="14,0" Margin="8,0,0,0"
+                                Background="#C62828" Foreground="White"
+                                BorderThickness="0" Cursor="Hand" FontSize="13"/>
+                        <Button DockPanel.Dock="Right" Content="+ Añadir Cliente"
+                                Command="{Binding AgregarClienteCommand}"
+                                Height="34" Padding="14,0" Margin="8,0,0,0"
+                                Background="#2E7D32" Foreground="White"
+                                BorderThickness="0" Cursor="Hand" FontSize="13"/>
+                        <TextBlock DockPanel.Dock="Left" Text="Cliente:"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   VerticalAlignment="Center" Foreground="#424242" Margin="0,0,12,0"/>
+                        <ComboBox ItemsSource="{Binding Clientes}"
+                                  SelectedItem="{Binding ClienteSeleccionado}"
+                                  DisplayMemberPath="Nombre"
+                                  Height="34" FontSize="14" Padding="8,0"
+                                  MaxWidth="320" HorizontalAlignment="Left"/>
+                    </DockPanel>
+                    <!-- Row 2: routine assignment -->
+                    <DockPanel Margin="0,10,0,0">
+                        <Button DockPanel.Dock="Right" Content="Quitar Rutina"
+                                Command="{Binding QuitarRutinaCommand}"
+                                Height="30" Padding="10,0" Margin="8,0,0,0"
+                                Background="#546E7A" Foreground="White"
+                                BorderThickness="0" Cursor="Hand" FontSize="12"/>
+                        <Button DockPanel.Dock="Right" Content="Asignar"
+                                Command="{Binding AsignarRutinaCommand}"
+                                Height="30" Padding="10,0" Margin="8,0,0,0"
+                                Background="#1565C0" Foreground="White"
+                                BorderThickness="0" Cursor="Hand" FontSize="12"/>
+                        <TextBlock DockPanel.Dock="Left" Text="Rutina actual:"
+                                   FontSize="13" VerticalAlignment="Center"
+                                   Foreground="#616161" Margin="0,0,12,0"/>
+                        <ComboBox ItemsSource="{Binding Rutinas}"
+                                  SelectedItem="{Binding RutinaSeleccionadaCliente}"
+                                  DisplayMemberPath="Nombre"
+                                  Height="30" FontSize="13" Padding="8,0"
+                                  MaxWidth="280" HorizontalAlignment="Left"/>
+                    </DockPanel>
+                </StackPanel>
             </Border>
 
             <!-- Exercises card -->

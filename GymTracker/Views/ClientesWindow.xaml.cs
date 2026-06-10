@@ -29,6 +29,12 @@ namespace GymTracker.Views
                 new RegistrosWindow(cliente, ejercicio) { Owner = this }.Show();
             };
 
+            vm.AbrirRutinasAction = () =>
+            {
+                new RutinasWindow { Owner = this }.ShowDialog();
+                vm.CargarDatos();
+            };
+
             DataContext = vm;
         }
 
