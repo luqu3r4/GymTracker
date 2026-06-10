@@ -67,7 +67,8 @@ namespace GymTracker.Data
                     IdEjercicio = reader.GetInt32("id_ejercicio"),
                     NombreEjercicio = reader.GetString("nombre"),
                     Series = reader.GetInt32("series"),
-                    RepsObjetivo = reader.GetInt32("reps_objetivo")
+                    RepsObjetivo = reader.GetInt32("reps_objetivo"),
+                    Foto = reader.IsDBNull(reader.GetOrdinal("foto")) ? null : (byte[])reader["foto"]
                 });
             return list;
         }

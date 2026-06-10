@@ -66,11 +66,13 @@ namespace GymTracker.ViewModels
         public ICommand SalirCommand { get; }
         public ICommand AcercaDeCommand { get; }
         public ICommand GestionarRutinasCommand { get; }
+        public ICommand GestionarEjerciciosCommand { get; }
 
         public Action? CerrarSesionAction { get; set; }
         public Func<string?>? PedirNombreAction { get; set; }
         public Action<Cliente, Ejercicio>? AbrirRegistrosAction { get; set; }
         public Action? AbrirRutinasAction { get; set; }
+        public Action? AbrirEjerciciosAction { get; set; }
 
         public ClientesViewModel()
         {
@@ -83,6 +85,7 @@ namespace GymTracker.ViewModels
             CerrarSesionCommand = new RelayCommand(_ => CerrarSesionAction?.Invoke());
             SalirCommand = new RelayCommand(_ => Application.Current.Shutdown());
             GestionarRutinasCommand = new RelayCommand(_ => AbrirRutinasAction?.Invoke());
+            GestionarEjerciciosCommand = new RelayCommand(_ => AbrirEjerciciosAction?.Invoke());
             AcercaDeCommand = new RelayCommand(_ => MessageBox.Show(
                 "GymTracker v1.0\nAplicación de seguimiento de entrenamiento.",
                 "Acerca de", MessageBoxButton.OK, MessageBoxImage.Information));
@@ -164,7 +167,7 @@ namespace GymTracker.ViewModels
 
         public void AbrirRegistros(Cliente cliente, RutinaEjercicio re)
         {
-            var ejercicio = new Ejercicio { IdEjercicio = re.IdEjercicio, Nombre = re.NombreEjercicio };
+            var ejercicio = new Ejercicio { IdEjercicio = re.IdEjercicio, Nombre = re.NombreEjercicio, Foto = re.Foto };
             AbrirRegistrosAction?.Invoke(cliente, ejercicio);
         }
 

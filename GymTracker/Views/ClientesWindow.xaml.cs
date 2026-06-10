@@ -35,6 +35,12 @@ namespace GymTracker.Views
                 vm.CargarDatos();
             };
 
+            vm.AbrirEjerciciosAction = () =>
+            {
+                new EjerciciosWindow { Owner = this }.ShowDialog();
+                vm.CargarDatos();
+            };
+
             DataContext = vm;
         }
 

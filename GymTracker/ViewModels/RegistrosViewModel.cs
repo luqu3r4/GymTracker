@@ -22,6 +22,8 @@ namespace GymTracker.ViewModels
         public ObservableCollection<Seguimiento> Registros { get; } = new();
 
         public string Titulo => $"{_cliente.Nombre}  —  {_ejercicio.Nombre}";
+        public byte[]? FotoEjercicio => _ejercicio.Foto;
+        public bool TieneFotoEjercicio => _ejercicio.Foto is { Length: > 0 };
 
         public Seguimiento? RegistroSeleccionado
         {

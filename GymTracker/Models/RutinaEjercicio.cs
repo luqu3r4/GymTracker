@@ -6,5 +6,6 @@ namespace GymTracker.Models
         public string NombreEjercicio { get; set; } = string.Empty;
         public int Series { get; set; }
         public int RepsObjetivo { get; set; }
+        public byte[]? Foto { get; set; }
     }
 }
