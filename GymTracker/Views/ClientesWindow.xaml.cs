@@ -53,5 +53,6 @@ namespace GymTracker.Views
 
             vm.AbrirRegistros(vm.ClienteSeleccionado, vm.EjercicioSeleccionado);
         }
+
     }
 }

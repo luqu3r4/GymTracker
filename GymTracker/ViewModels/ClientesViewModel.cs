@@ -10,17 +10,16 @@ namespace GymTracker.ViewModels
     public class ClientesViewModel : ViewModelBase
     {
         private readonly ClienteRepository _clienteRepo = new();
-        private readonly EjercicioRepository _ejercicioRepo = new();
         private readonly RutinaRepository _rutinaRepo = new();
 
         private Cliente? _clienteSeleccionado;
-        private Ejercicio? _ejercicioSeleccionado;
         private Rutina? _rutinaSeleccionadaCliente;
+        private RutinaEjercicio? _ejercicioSeleccionado;
         private string _fechaActual = string.Empty;
 
         public ObservableCollection<Cliente> Clientes { get; } = new();
-        public ObservableCollection<Ejercicio> Ejercicios { get; } = new();
         public ObservableCollection<Rutina> Rutinas { get; } = new();
+        public ObservableCollection<RutinaEjercicio> EjerciciosRutina { get; } = new();
 
         public Cliente? ClienteSeleccionado
         {
@@ -32,17 +31,24 @@ namespace GymTracker.ViewModels
             }
         }
 
-        public Ejercicio? EjercicioSeleccionado
+        public Rutina? RutinaSeleccionadaCliente
+        {
+            get => _rutinaSeleccionadaCliente;
+            set
+            {
+                SetProperty(ref _rutinaSeleccionadaCliente, value);
+                OnPropertyChanged(nameof(SinRutina));
+                CargarEjerciciosRutina();
+            }
+        }
+
+        public RutinaEjercicio? EjercicioSeleccionado
         {
             get => _ejercicioSeleccionado;
             set => SetProperty(ref _ejercicioSeleccionado, value);
         }
 
-        public Rutina? RutinaSeleccionadaCliente
-        {
-            get => _rutinaSeleccionadaCliente;
-            set => SetProperty(ref _rutinaSeleccionadaCliente, value);
-        }
+        public bool SinRutina => RutinaSeleccionadaCliente is null;
 
         public string NombreEntrenador => Session.EntrenadorActivo?.Nombre ?? string.Empty;
 
@@ -95,15 +101,10 @@ namespace GymTracker.ViewModels
             foreach (var c in _clienteRepo.GetByEntrenador(Session.EntrenadorActivo.IdEntrenador))
                 Clientes.Add(c);
 
-            Ejercicios.Clear();
-            foreach (var e in _ejercicioRepo.GetAll())
-                Ejercicios.Add(e);
-
             Rutinas.Clear();
             foreach (var r in _rutinaRepo.GetByEntrenador(Session.EntrenadorActivo.IdEntrenador))
                 Rutinas.Add(r);
 
-            // Restore selection if possible
             if (clienteAnteriorId.HasValue)
                 ClienteSeleccionado = Clientes.FirstOrDefault(c => c.IdCliente == clienteAnteriorId.Value);
         }
@@ -116,11 +117,18 @@ namespace GymTracker.ViewModels
                 RutinaSeleccionadaCliente = null;
         }
 
+        private void CargarEjerciciosRutina()
+        {
+            EjerciciosRutina.Clear();
+            if (RutinaSeleccionadaCliente is null) return;
+            foreach (var e in _rutinaRepo.GetEjercicios(RutinaSeleccionadaCliente.IdRutina))
+                EjerciciosRutina.Add(e);
+        }
+
         private void AgregarCliente()
         {
             var nombre = PedirNombreAction?.Invoke();
             if (string.IsNullOrWhiteSpace(nombre)) return;
-
             _clienteRepo.Crear(nombre.Trim(), Session.EntrenadorActivo!.IdEntrenador);
             CargarDatos();
         }
@@ -128,11 +136,9 @@ namespace GymTracker.ViewModels
         private void EliminarCliente()
         {
             if (ClienteSeleccionado is null) return;
-
             var result = MessageBox.Show(
                 $"¿Eliminar a '{ClienteSeleccionado.Nombre}'? Se borrarán todos sus registros.",
                 "Confirmar eliminación", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
             if (result == MessageBoxResult.Yes)
             {
                 _clienteRepo.Eliminar(ClienteSeleccionado.IdCliente);
@@ -146,8 +152,6 @@ namespace GymTracker.ViewModels
             _rutinaRepo.AsignarRutinaCliente(ClienteSeleccionado.IdCliente, RutinaSeleccionadaCliente.IdRutina);
             ClienteSeleccionado.IdRutinaActual = RutinaSeleccionadaCliente.IdRutina;
             CargarDatos();
-            MessageBox.Show($"Rutina '{RutinaSeleccionadaCliente.Nombre}' asignada a {ClienteSeleccionado.Nombre}.",
-                "GymTracker", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void QuitarRutina()
@@ -158,8 +162,11 @@ namespace GymTracker.ViewModels
             CargarDatos();
         }
 
-        public void AbrirRegistros(Cliente cliente, Ejercicio ejercicio)
-            => AbrirRegistrosAction?.Invoke(cliente, ejercicio);
+        public void AbrirRegistros(Cliente cliente, RutinaEjercicio re)
+        {
+            var ejercicio = new Ejercicio { IdEjercicio = re.IdEjercicio, Nombre = re.NombreEjercicio };
+            AbrirRegistrosAction?.Invoke(cliente, ejercicio);
+        }
 
         private void IniciarReloj()
         {

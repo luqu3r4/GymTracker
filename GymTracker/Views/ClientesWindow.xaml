@@ -7,6 +7,10 @@
         WindowStartupLocation="CenterScreen"
         Background="#F0F2F5">
 
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+
     <DockPanel>
 
         <!-- MENU -->
@@ -110,13 +114,31 @@
                     <DropShadowEffect Color="#BDBDBD" ShadowDepth="1" BlurRadius="8" Opacity="0.25"/>
                 </Border.Effect>
                 <DockPanel>
+                    <!-- Header -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,12">
-                        <TextBlock Text="Ejercicios" FontSize="15" FontWeight="Bold" Foreground="#1565C0"/>
-                        <TextBlock Text="  —  Doble clic para ver los registros"
+                        <TextBlock Text="Ejercicios de la rutina" FontSize="15" FontWeight="Bold"
+                                   Foreground="#1565C0"/>
+                        <TextBlock Text="  —  Doble clic para registrar peso"
                                    FontSize="12" Foreground="#9E9E9E" VerticalAlignment="Center"/>
                     </StackPanel>
+
+                    <!-- Empty state: no routine assigned -->
+                    <Border DockPanel.Dock="Top"
+                            Visibility="{Binding SinRutina, Converter={StaticResource BoolToVis}}"
+                            Background="#F5F5F5" CornerRadius="6" Padding="20,30"
+                            HorizontalAlignment="Stretch">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="Sin rutina asignada" FontSize="15" FontWeight="SemiBold"
+                                       Foreground="#9E9E9E" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Selecciona una rutina en el desplegable de arriba y pulsa Asignar."
+                                       FontSize="12" Foreground="#BDBDBD" HorizontalAlignment="Center"
+                                       Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- DataGrid with routine exercises -->
                     <DataGrid x:Name="DataGridEjercicios"
-                              ItemsSource="{Binding Ejercicios}"
+                              ItemsSource="{Binding EjerciciosRutina}"
                               SelectedItem="{Binding EjercicioSeleccionado}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
@@ -125,13 +147,17 @@
                               SelectionMode="Single"
                               GridLinesVisibility="Horizontal"
                               BorderThickness="0"
-                              RowHeight="38"
+                              RowHeight="40"
                               FontSize="13"
                               HeadersVisibility="Column"
                               MouseDoubleClick="DataGridEjercicios_MouseDoubleClick">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Nombre del Ejercicio"
-                                               Binding="{Binding Nombre}" Width="*"/>
+                            <DataGridTextColumn Header="Ejercicio"
+                                               Binding="{Binding NombreEjercicio}" Width="*"/>
+                            <DataGridTextColumn Header="Series"
+                                               Binding="{Binding Series}" Width="80"/>
+                            <DataGridTextColumn Header="Reps objetivo"
+                                               Binding="{Binding RepsObjetivo}" Width="110"/>
                         </DataGrid.Columns>
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
